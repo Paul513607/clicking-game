@@ -1,3 +1,6 @@
+import { AvoidElement } from "./AvoidElement.js";
+import { CollectElement } from "./CollectElement.js";
+import { ElementClickEvent } from "./ElementClickEvent.js";
 import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
@@ -7,11 +10,12 @@ import { GameElementType } from "./GameElementType.js";
 export class ChangeElement extends GameElement {
     private length: number = 0;
     private subType: GameElementType = GameElementType.NONE;
+
     private rotationAngle: number = 0;
     private rotationSpeed: number = 0.05;
-        
-    constructor(x: number, y: number, gameInstance: Game, length: number) {
-        super(x, y, GameElementType.CHANGE, gameInstance);
+
+    constructor(x: number, y: number, id: number, length: number) {
+        super(x, y, id, GameElementType.CHANGE);
         this.color = 'green';
         this.length = length;
         this.subType = GameElementType.COLLECT;
@@ -54,16 +58,22 @@ export class ChangeElement extends GameElement {
         return false;
     }
 
-    public onClick(): void {
+    public onClick(): ElementClickEvent {
+        let points: number = 0;
+        let gameOver: boolean = false;
         if (this.subType === GameElementType.COLLECT) {
-            this.gameInstance.addToScore(100);
-
-            const index = this.gameInstance.getElements().indexOf(this);
-            if (index !== -1) {
-                this.gameInstance.getElements().splice(index, 1);
-            }
+            points = CollectElement.POINTS;
         } else {
-            this.gameInstance.stopGame(false);
+            points = AvoidElement.POINTS;
+            gameOver = true;
         }
+
+        const event: ElementClickEvent = {
+            gameElementId: this.id,
+            points: points,
+            gameOver: gameOver,
+        }
+
+        return event;
     }
 }

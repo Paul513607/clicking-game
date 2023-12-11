@@ -1,4 +1,5 @@
 import { AvoidElement } from "./AvoidElement.js";
+import { CanvasConstants } from "./CanvasConstants.js";
 import { ChangeElement } from "./ChangeElement.js";
 import { CollectElement } from "./CollectElement.js";
 import { Game } from "./Game.js";
@@ -6,26 +7,49 @@ import { GameElement } from "./GameElement.js";
 import { GameElementType } from "./GameElementType.js";
 
 export class GameElementFactory {
-    public MIN_SIZE: number = 50;
-    public createGameElement(type: GameElementType, gameInstance: Game,
-            canvasStartX: number, canvasStartY: number,
-            canvasEndX: number, canvasEndY: number): GameElement {
+    public static MIN_SIZE: number = 50;
+
+    private static instance: GameElementFactory;
+
+    private constructor() {
+    }
+
+    public static getInstance(): GameElementFactory {
+        if (!GameElementFactory.instance) {
+            GameElementFactory.instance = new GameElementFactory();
+        }
+
+        return GameElementFactory.instance;
+    }
+
+    public static getRandomSize(): number {
+        return Math.random() * 100 + GameElementFactory.MIN_SIZE;
+    }
+
+    public createGameElement(type: GameElementType, id: number): GameElement {
+                
         if (type == GameElementType.COLLECT) {
-            const width = Math.random() * 100 + this.MIN_SIZE;
-            const height = Math.random() * 100 + this.MIN_SIZE;
-            const x = Math.random() * (canvasEndX - width) + canvasStartX;
-            const y = Math.random() * (canvasEndY - height) + canvasStartY; 
-            return new CollectElement(x, y, gameInstance, width, height);
+            const width = GameElementFactory.getRandomSize();
+            const height = GameElementFactory.getRandomSize();
+
+            const x = Math.random() * (CanvasConstants.CANVAS_END_X - width) + CanvasConstants.CANVAS_START_X;
+            const y = Math.random() * (CanvasConstants.CANVAS_END_Y - height) + CanvasConstants.CANVAS_START_Y; 
+
+            return new CollectElement(x, y, id, width, height);
         } else if (type == GameElementType.AVOID) {
-            const radius = Math.random() * 100 + this.MIN_SIZE;
-            const x = Math.random() * (canvasEndX - radius * 2) + canvasStartX;
-            const y = Math.random() * (canvasEndY - radius * 2) + canvasStartY;
-            return new AvoidElement(x, y, gameInstance, radius);
+            const radius = GameElementFactory.getRandomSize();
+
+            const x = Math.random() * (CanvasConstants.CANVAS_END_X - radius * 2) + CanvasConstants.CANVAS_START_X;
+            const y = Math.random() * (CanvasConstants.CANVAS_END_Y - radius * 2) + CanvasConstants.CANVAS_START_Y;
+
+            return new AvoidElement(x, y, id, radius);
         } else if (type == GameElementType.CHANGE) {
-            const length = Math.random() * 100 + this.MIN_SIZE;
-            const x = Math.random() * (canvasEndX - length) + canvasStartX;
-            const y = Math.random() * (canvasEndY - length) + canvasStartY;
-            return new ChangeElement(x, y, gameInstance, length);
+            const length = GameElementFactory.getRandomSize();
+
+            const x = Math.random() * (CanvasConstants.CANVAS_END_X - length) + CanvasConstants.CANVAS_START_X;
+            const y = Math.random() * (CanvasConstants.CANVAS_END_Y - length) + CanvasConstants.CANVAS_START_Y;
+
+            return new ChangeElement(x, y, id, length);
         } else {
             throw new Error(`Invalid element type: ${type}`);
         }

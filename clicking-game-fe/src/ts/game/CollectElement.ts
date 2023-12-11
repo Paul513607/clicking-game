@@ -1,3 +1,5 @@
+import { CanvasConstants } from "./CanvasConstants.js";
+import { ElementClickEvent } from "./ElementClickEvent.js";
 import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
@@ -7,10 +9,13 @@ import { GameElementType } from "./GameElementType.js";
 export class CollectElement extends GameElement {
     private width: number = 0;
     private height: number = 0;
+
     private speedY: number = 50;
 
-    constructor(x: number, y: number, gameInstance: Game, width: number, height: number) {
-        super(x, y, GameElementType.COLLECT, gameInstance);
+    public static POINTS: number = 100;
+
+    constructor(x: number, y: number, id: number, width: number, height: number) {
+        super(x, y, id, GameElementType.COLLECT);
         this.color = 'green';
         this.width = width;
         this.height = height;
@@ -23,7 +28,7 @@ export class CollectElement extends GameElement {
     public doBehavior(): void {
         this.speedY = -this.speedY;
 
-        if (this.y < 0 || this.y + this.height > Game.CANVAS_HEIGHT) {
+        if (this.y < 0 || this.y + this.height > CanvasConstants.CANVAS_HEIGHT) {
             this.speedY = -this.speedY;
         }
 
@@ -46,11 +51,13 @@ export class CollectElement extends GameElement {
         return false;
     }
 
-    public onClick(): void {
-        this.gameInstance.addToScore(100);
-        const index = this.gameInstance.getElements().indexOf(this);
-        if (index !== -1) {
-            this.gameInstance.getElements().splice(index, 1);
+    public onClick(): ElementClickEvent {
+        const event: ElementClickEvent = {
+            gameElementId: this.id,
+            points: CollectElement.POINTS,
+            gameOver: false,
         }
+
+        return event;
     }
 }

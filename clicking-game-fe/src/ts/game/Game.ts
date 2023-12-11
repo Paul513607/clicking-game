@@ -1,3 +1,5 @@
+import { CanvasConstants } from "./CanvasConstants.js";
+import { ElementClickEvent } from "./ElementClickEvent.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementFactory } from "./GameElementFactory.js";
 import { GameElementType } from "./GameElementType.js";
@@ -10,8 +12,7 @@ export class Game {
     private isGameRunning: boolean = false;
 
     public static GAME_ELEMENT_COUNT: number = 10;
-    public static readonly CANVAS_WIDTH: number = 1200;
-    public static readonly CANVAS_HEIGHT: number = 800;
+
     public static readonly MIN_CENTER_DISTANCE: number = 100;
 
     public score: number = 0;
@@ -22,8 +23,8 @@ export class Game {
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.canvas.width = Game.CANVAS_WIDTH;
-        this.canvas.height = Game.CANVAS_HEIGHT;
+        this.canvas.width = CanvasConstants.CANVAS_WIDTH;
+        this.canvas.height = CanvasConstants.CANVAS_HEIGHT;
         this.setupGame();
     }
 
@@ -40,28 +41,45 @@ export class Game {
         this.canvas.addEventListener('click', (event: MouseEvent) => {
             const x: number = event.clientX - this.canvas.offsetLeft;
             const y: number = event.clientY - this.canvas.offsetTop;
+
+            const toRemove: GameElement[] = [];
             for (const element of this.elements) {
                 if (element.isClicked(x, y)) {
-                    element.onClick();
+                    let elementClickEvent: ElementClickEvent = element.onClick();
+                    if (elementClickEvent.gameOver) {
+                        this.stopGame(false);
+                        break;
+                    }
+
+                    this.score += elementClickEvent.points;
+                    toRemove.push(element);
                 }
             }
+
+            this.elements = this.elements.filter((element: GameElement) => {
+                return !toRemove.includes(element);
+            });
         });
         this.score = 0;
         this.timeElapsed = 0;
         
-        const factory = new GameElementFactory();
+        const factory = GameElementFactory.getInstance();
         const types: GameElementType[] = [GameElementType.COLLECT, GameElementType.AVOID, GameElementType.CHANGE];
+
         for (let i = 0; i < Game.GAME_ELEMENT_COUNT; i++) {
             const randomType: GameElementType = types[Math.floor(Math.random() * types.length)];
-            const element = factory.createGameElement(randomType, this, 0, 0, Game.CANVAS_WIDTH, Game.CANVAS_HEIGHT);
+            const element = factory.createGameElement(randomType, i);
+
             // check if element is overlapping with other elements
             let isOverlapping = false;
             for (const otherElement of this.elements) {
-                if (Math.sqrt(Math.pow(element.getX() - otherElement.getX(), 2) + Math.pow(element.getY() - otherElement.getY(), 2)) < Game.MIN_CENTER_DISTANCE) {
+                if (Math.sqrt(Math.pow(element.getX() - otherElement.getX(), 2) + 
+                            Math.pow(element.getY() - otherElement.getY(), 2)) < Game.MIN_CENTER_DISTANCE) {
                     isOverlapping = true;
                     break;
                 }
             }
+            
             if (isOverlapping) {
                 i--;
                 continue;
@@ -89,7 +107,7 @@ export class Game {
     }
 
     private drawGame() {
-        this.ctx.clearRect(0, 0, Game.CANVAS_WIDTH, Game.CANVAS_HEIGHT);
+        this.ctx.clearRect(0, 0, CanvasConstants.CANVAS_WIDTH, CanvasConstants.CANVAS_HEIGHT);
 
         for (const element of this.elements) {
             element.draw(this.ctx);
@@ -123,9 +141,11 @@ export class Game {
     public stopGame(isWin: boolean) {
         this.isGameRunning = false;
         this.stopTimer();
+        
         if (isWin) {
             localStorage.setItem('score', this.score.toString());
             localStorage.setItem('duration', this.timeElapsed.toString());
+
             window.location.href = '/game-win';
         } else {
             window.location.href = '/game-fail';

@@ -3,16 +3,19 @@ import { UserService } from "./services/UserService.js";
 
 const userService = new UserService();
 
+const LEADERBOARD_SIZE = 3;
+
 document.addEventListener('DOMContentLoaded', () => {
     userService.getLeaderboard()
         .then(data => {
-            const leaderboardData = data.slice(0, 3);
+            const leaderboardData = data.slice(0, LEADERBOARD_SIZE);
 
             populateLeaderboardTable(leaderboardData);
         })
         .catch(error => {
             console.error('Error fetching leaderboard data:', error);
         });
+        
     document.getElementById('play-again-lb')?.addEventListener('click', () => {
         window.location.href = '/';
     });

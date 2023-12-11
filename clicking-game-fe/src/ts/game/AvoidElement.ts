@@ -1,3 +1,5 @@
+import { CanvasConstants } from "./CanvasConstants.js";
+import { ElementClickEvent } from "./ElementClickEvent.js";
 import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
@@ -6,10 +8,13 @@ import { GameElementType } from "./GameElementType.js";
 
 export class AvoidElement extends GameElement {
     private radius: number = 0;
+
     private speedX: number = 50;
 
-    constructor(x: number, y: number, gameInstance: Game, radius: number) {
-        super(x, y, GameElementType.AVOID, gameInstance);
+    public static POINTS: number = 0;
+
+    constructor(x: number, y: number, id: number, radius: number) {
+        super(x, y, id, GameElementType.AVOID);
         this.color = 'red';
         this.radius = radius * 0.75;
 
@@ -21,7 +26,7 @@ export class AvoidElement extends GameElement {
     public doBehavior(): void {
         this.speedX = -this.speedX;
 
-        if (this.x < 0 || this.x + this.radius * 2 > Game.CANVAS_WIDTH) {
+        if (this.x < 0 || this.x + this.radius * 2 > CanvasConstants.CANVAS_WIDTH) {
             this.speedX = -this.speedX;
         }
 
@@ -46,8 +51,13 @@ export class AvoidElement extends GameElement {
         return false;
     }
     
-    public onClick(): void {
-        this.gameInstance.stopGame(false);
-        const index = this.gameInstance.getElements().indexOf(this);
+    public onClick(): ElementClickEvent {
+        const event: ElementClickEvent = {
+            gameElementId: this.id,
+            points: AvoidElement.POINTS,
+            gameOver: true,
+        }
+
+        return event;
     }
 }
