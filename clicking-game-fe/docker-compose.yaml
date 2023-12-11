@@ -1,0 +1,32 @@
+version: "3.3"
+services:
+  pp-be-postgres:
+    container_name: pp-be-postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - vol-postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  pp-be-clicking-game:
+    container_name: pp-be-clicking-game
+    build:
+      context: ../clicking-game-be/.
+    ports:
+      - "8080:8080"
+    links:
+      - pp-be-postgres
+  pp-fe-clicking-game:
+    container_name: pp-fe-clicking-game
+    build:
+      context: .
+    ports:
+      - "4200:4200"
+    links:
+      - pp-be-postgres
+      - pp-be-clicking-game
+volumes:
+  vol-postgres:
+    driver: local
