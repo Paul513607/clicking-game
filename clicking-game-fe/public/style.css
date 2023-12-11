@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#startButtonContainer {
+    text-align: center;
+}
+
+#startButton {
+    font-size: 24px;
+    padding: 15px 30px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startButton:hover {
+    background-color: #2980b9;
+}
+
+.centered-message {
+    text-align: center;
+    margin-top: 50px;
+}
+
+#play-again, #play-again-lb {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.win-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.win-message {
+    text-align: center;
+}
+
+.win-form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.win-form-label, h1 {
+    margin-bottom: 10px;
+}
+
+.win-form-input, #win-form-button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.leaderboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
