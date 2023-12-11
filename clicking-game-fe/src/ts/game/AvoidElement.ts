@@ -11,12 +11,14 @@ export class AvoidElement extends GameElement {
 
     private speedX: number = 50;
 
+    private static RADIUS_SHRINK_RATE: number = 0.75;
+
     public static POINTS: number = 0;
 
     constructor(x: number, y: number, id: number, radius: number) {
         super(x, y, id, GameElementType.AVOID);
         this.color = 'red';
-        this.radius = radius * 0.75;
+        this.radius = radius * AvoidElement.RADIUS_SHRINK_RATE;
 
         setInterval(() => {
             this.doBehavior();
