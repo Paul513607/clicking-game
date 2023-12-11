@@ -1,7 +1,7 @@
-import { User } from "../model/User.js";
+import { User } from "../model/User.js";;
 
 export class UserService {
-    private usersUrl: string = `${process.env.BE_URL}/users`;
+    private usersUrl: string = `http://localhost:8080/api/users`;
 
     public async create(name: string, score: number, duration: number): Promise<User> {
         try {
