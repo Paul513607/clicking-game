@@ -1,3 +1,4 @@
+import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
@@ -9,10 +10,8 @@ export class CollectElement extends GameElement {
     private speedY: number = 50;
 
     constructor(x: number, y: number, gameInstance: Game, width: number, height: number) {
-        super(x, y, gameInstance);
-        this.type = GameElementType.COLLECT;
+        super(x, y, GameElementType.COLLECT, gameInstance);
         this.color = 'green';
-        this.shape = GameElementShapeType.RECTANGLE;
         this.width = width;
         this.height = height;
 

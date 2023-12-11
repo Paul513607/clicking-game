@@ -1,3 +1,4 @@
+import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
@@ -8,10 +9,8 @@ export class AvoidElement extends GameElement {
     private speedX: number = 50;
 
     constructor(x: number, y: number, gameInstance: Game, radius: number) {
-        super(x, y, gameInstance);
-        this.type = GameElementType.AVOID;
+        super(x, y, GameElementType.AVOID, gameInstance);
         this.color = 'red';
-        this.shape = GameElementShapeType.CIRCLE;
         this.radius = radius * 0.75;
 
         setInterval(() => {

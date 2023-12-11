@@ -1,3 +1,4 @@
+import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
@@ -10,10 +11,8 @@ export class ChangeElement extends GameElement {
     private rotationSpeed: number = 0.05;
         
     constructor(x: number, y: number, gameInstance: Game, length: number) {
-        super(x, y, gameInstance);
-        this.type = GameElementType.CHANGE;
+        super(x, y, GameElementType.CHANGE, gameInstance);
         this.color = 'green';
-        this.shape = GameElementShapeType.SQUARE;
         this.length = length;
         this.subType = GameElementType.COLLECT;
 

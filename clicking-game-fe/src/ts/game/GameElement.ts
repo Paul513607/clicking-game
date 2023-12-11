@@ -1,3 +1,4 @@
+import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
@@ -12,9 +13,11 @@ export abstract class GameElement {
 
     protected gameInstance: Game;
 
-    constructor(x: number, y: number, gameInstance: Game) {
+    constructor(x: number, y: number, type: GameElementType, gameInstance: Game) {
         this.x = x;
         this.y = y;
+        this.type = type;
+        this.shape = elementTypeToShapeMap.get(type) as GameElementShapeType;
         this.gameInstance = gameInstance;
     }
 

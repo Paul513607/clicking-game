@@ -3,5 +3,5 @@ const playAgain = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('playAgain')?.addEventListener('click', playAgain);
+    document.getElementById('play-again')?.addEventListener('click', playAgain);
 });
