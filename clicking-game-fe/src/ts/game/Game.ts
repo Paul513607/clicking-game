@@ -3,6 +3,7 @@ import { ElementClickEvent } from "./ElementClickEvent.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementFactory } from "./GameElementFactory.js";
 import { GameElementType } from "./GameElementType.js";
+import { SurrondingRectangle } from "./SurroundingRectangle.js";
 
 export class Game {
     private canvas: HTMLCanvasElement;
@@ -23,6 +24,9 @@ export class Game {
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        this.canvas.style.left = CanvasConstants.CANVAS_START_X + 'px';
+        this.canvas.style.top = CanvasConstants.CANVAS_START_Y + 'px';
         this.canvas.width = CanvasConstants.CANVAS_WIDTH;
         this.canvas.height = CanvasConstants.CANVAS_HEIGHT;
         this.setupGame();
@@ -60,6 +64,7 @@ export class Game {
                 return !toRemove.includes(element);
             });
         });
+
         this.score = 0;
         this.timeElapsed = 0;
         
@@ -70,11 +75,22 @@ export class Game {
             const randomType: GameElementType = types[Math.floor(Math.random() * types.length)];
             const element = factory.createGameElement(randomType, i);
 
-            // check if element is overlapping with other elements
+            const { x: x1, y: y1, width: width1, height: height1 } = element.getSurroundingRectangle() as SurrondingRectangle;
+
+            // check if element is overlapping with other elements or out of bounds
             let isOverlapping = false;
+
+            if (x1 < CanvasConstants.CANVAS_START_X || x1 + width1 > CanvasConstants.CANVAS_END_X || 
+                y1 < CanvasConstants.CANVAS_START_Y || y1 + height1 > CanvasConstants.CANVAS_END_Y) {
+                i--;
+                continue;
+            }
+
             for (const otherElement of this.elements) {
-                if (Math.sqrt(Math.pow(element.getX() - otherElement.getX(), 2) + 
-                            Math.pow(element.getY() - otherElement.getY(), 2)) < Game.MIN_CENTER_DISTANCE) {
+                const { x: x2, y: y2, width: width2, height: height2 } = otherElement.getSurroundingRectangle() as SurrondingRectangle;
+
+                if (x1 < x2 + width2 && x1 + width1 > x2 &&
+                    y1 < y2 + height2 && y1 + height1 > y2) {
                     isOverlapping = true;
                     break;
                 }

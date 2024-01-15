@@ -28,6 +28,18 @@ body {
     background-color: #2980b9;
 }
 
+#gameCanvasContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#gameCanvas {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}   
+
 .centered-message {
     text-align: center;
     margin-top: 50px;

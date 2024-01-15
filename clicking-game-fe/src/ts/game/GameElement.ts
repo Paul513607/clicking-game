@@ -3,6 +3,7 @@ import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
+import { SurrondingRectangle } from "./SurroundingRectangle.js";
 
 export abstract class GameElement {
     protected x: number = 0;
@@ -12,6 +13,8 @@ export abstract class GameElement {
     protected type: GameElementType = GameElementType.NONE;
     protected color: string = '';
     protected shape: GameElementShapeType = GameElementShapeType.NONE;
+
+    protected surroundingRectangle: SurrondingRectangle | null = null;
 
     constructor(x: number, y: number, id: number, type: GameElementType) {
         this.x = x;
@@ -44,4 +47,14 @@ export abstract class GameElement {
     public abstract isClicked(x: number, y: number): boolean;
 
     public abstract onClick(): ElementClickEvent;
+
+    public abstract calculateSurroundingRectangle(): SurrondingRectangle;
+
+    public getSurroundingRectangle(): SurrondingRectangle | null {
+        return this.surroundingRectangle;
+    }
+
+    public setSurroundingRectangle(surroundingRectangle: SurrondingRectangle): void {
+        this.surroundingRectangle = surroundingRectangle;
+    }
 }

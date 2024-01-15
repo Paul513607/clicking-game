@@ -5,6 +5,7 @@ import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
+import { SurrondingRectangle } from "./SurroundingRectangle.js";
 
 export class AvoidElement extends GameElement {
     private radius: number = 0;
@@ -13,12 +14,16 @@ export class AvoidElement extends GameElement {
 
     private static RADIUS_SHRINK_RATE: number = 0.75;
 
+    private IS_INITIAL_DIRECTION_LEFT: boolean = true;
+
     public static POINTS: number = 0;
 
     constructor(x: number, y: number, id: number, radius: number) {
         super(x, y, id, GameElementType.AVOID);
         this.color = 'red';
         this.radius = radius * AvoidElement.RADIUS_SHRINK_RATE;
+
+        this.surroundingRectangle = this.calculateSurroundingRectangle();
 
         setInterval(() => {
             this.doBehavior();
@@ -27,10 +32,6 @@ export class AvoidElement extends GameElement {
 
     public doBehavior(): void {
         this.speedX = -this.speedX;
-
-        if (this.x < 0 || this.x + this.radius * 2 > CanvasConstants.CANVAS_WIDTH) {
-            this.speedX = -this.speedX;
-        }
 
         this.x += this.speedX;
     }
@@ -61,5 +62,22 @@ export class AvoidElement extends GameElement {
         }
 
         return event;
+    }
+
+    public calculateSurroundingRectangle(): SurrondingRectangle {
+        let x = this.x - this.radius;
+        const y = this.y - this.radius;
+        const width = this.radius * 2 + Math.abs(this.speedX);
+        const height = this.radius * 2;
+        if (this.IS_INITIAL_DIRECTION_LEFT) {
+            x -= Math.abs(this.speedX);
+        }
+
+        return {
+            x: x,
+            y: y,
+            width: width,
+            height: height
+        }
     }
 }

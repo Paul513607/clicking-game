@@ -6,6 +6,7 @@ import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
+import { SurrondingRectangle } from "./SurroundingRectangle.js";
 
 export class ChangeElement extends GameElement {
     private length: number = 0;
@@ -13,12 +14,16 @@ export class ChangeElement extends GameElement {
 
     private rotationAngle: number = 0;
     private rotationSpeed: number = 0.05;
+    
+    private radius: number = 0;
 
     constructor(x: number, y: number, id: number, length: number) {
         super(x, y, id, GameElementType.CHANGE);
         this.color = 'green';
         this.length = length;
         this.subType = GameElementType.COLLECT;
+
+        this.surroundingRectangle = this.calculateSurroundingRectangle();
 
         setInterval(() => {
             this.doBehavior();
@@ -75,5 +80,26 @@ export class ChangeElement extends GameElement {
         }
 
         return event;
+    }
+
+    public calculateSurroundingRectangle(): SurrondingRectangle {
+        // find the center of the circle that this square is inscribed in
+        this.radius = this.length * Math.sqrt(2) / 2;
+        const radius = this.radius;
+        const centerX = this.x + this.length / 2;
+        const centerY = this.y + this.length / 2;
+
+        // find the top left corner of the square that this circle is inscribed in
+        const x = centerX - radius;
+        const y = centerY - radius;
+        const width = radius * 2;
+        const height = radius * 2;
+
+        return {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+        }
     }
 }

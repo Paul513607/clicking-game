@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
     <title>Clicking Game</title>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="gameCanvasContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
     <script type="module" src="js/game/Game.js"></script>
 </body>
 </html>
