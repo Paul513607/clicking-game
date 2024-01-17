@@ -1,24 +1,19 @@
 import { CanvasConstants } from "./CanvasConstants.js";
 import { ElementClickEvent } from "./ElementClickEvent.js";
-import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
 import { GameElement } from "./GameElement.js";
+import { GameElementActionType } from "./GameElementActionType.js";
+import { GameElementHelper } from "./GameElementHelper.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
+import { Shape } from "./shape/Shape.js";
 
 export class CollectElement extends GameElement {
-    private width: number = 0;
-    private height: number = 0;
-
-    private speedY: number = 50;
-
     public static POINTS: number = 100;
 
-    constructor(x: number, y: number, id: number, width: number, height: number) {
-        super(x, y, id, GameElementType.COLLECT);
+    constructor(id: number, shape: Shape, action: GameElementActionType) {
+        super(id, GameElementType.COLLECT, shape, action);
         this.color = 'green';
-        this.width = width;
-        this.height = height;
 
         setInterval(() => {
             this.doBehavior();
@@ -26,29 +21,15 @@ export class CollectElement extends GameElement {
     }
 
     public doBehavior(): void {
-        this.speedY = -this.speedY;
-
-        if (this.y < 0 || this.y + this.height > CanvasConstants.CANVAS_HEIGHT) {
-            this.speedY = -this.speedY;
-        }
-
-        this.y += this.speedY;
+        GameElementHelper.doBehaviorBasedOnAction(this.action, this.shape);
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {
-        ctx.beginPath();
-        ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
+        this.shape.draw(ctx, this.color);
     }
 
     public isClicked(x: number, y: number): boolean {
-        if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) {
-            return true;
-        }
-
-        return false;
+        return this.shape.isClicked(x, y);
     }
 
     public onClick(): ElementClickEvent {

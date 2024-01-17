@@ -1,7 +1,11 @@
+import { GameElementParameters } from "../model/GameElementParameters.js";
+import { GameElementService } from "../services/GameElementService.js";
 import { CanvasConstants } from "./CanvasConstants.js";
 import { ElementClickEvent } from "./ElementClickEvent.js";
 import { GameElement } from "./GameElement.js";
+import { GameElementActionType } from "./GameElementActionType.js";
 import { GameElementFactory } from "./GameElementFactory.js";
+import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
 
 export class Game {
@@ -11,7 +15,7 @@ export class Game {
     private timer: number = 0;
     private isGameRunning: boolean = false;
 
-    public static GAME_ELEMENT_COUNT: number = 10;
+    public static gameElementCount: number = 0;
 
     public static readonly MIN_CENTER_DISTANCE: number = 100;
 
@@ -20,7 +24,11 @@ export class Game {
     public timeElapsed: number = 0;
     private timerInterval: NodeJS.Timeout | null = null;
 
+    private readonly gameElementService: GameElementService;
+
     constructor(canvas: HTMLCanvasElement) {
+        this.gameElementService = GameElementService.getInstance();
+
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         this.canvas.width = CanvasConstants.CANVAS_WIDTH;
@@ -66,15 +74,19 @@ export class Game {
         const factory = GameElementFactory.getInstance();
         const types: GameElementType[] = [GameElementType.COLLECT, GameElementType.AVOID, GameElementType.CHANGE];
 
-        for (let i = 0; i < Game.GAME_ELEMENT_COUNT; i++) {
-            const randomType: GameElementType = types[Math.floor(Math.random() * types.length)];
-            const element = factory.createGameElement(randomType, i);
+        const gameElementsAsParameters: GameElementParameters[] = this.gameElementService.getGameElementsAsParameters();
+
+        for (let i = 0; i < gameElementsAsParameters.length; i++) {
+            const type: GameElementType = gameElementsAsParameters[i].type;
+            const shapeType: GameElementShapeType = gameElementsAsParameters[i].shape;
+            const actionType: GameElementActionType = gameElementsAsParameters[i].action;
+            const element = factory.createGameElement(type, shapeType, actionType, i);
 
             // check if element is overlapping with other elements
             let isOverlapping = false;
             for (const otherElement of this.elements) {
-                if (Math.sqrt(Math.pow(element.getX() - otherElement.getX(), 2) + 
-                            Math.pow(element.getY() - otherElement.getY(), 2)) < Game.MIN_CENTER_DISTANCE) {
+                if (Math.sqrt(Math.pow(element.getShape().getX() - otherElement.getShape().getX(), 2) + 
+                            Math.pow(element.getShape().getY() - otherElement.getShape().getY(), 2)) < Game.MIN_CENTER_DISTANCE) {
                     isOverlapping = true;
                     break;
                 }

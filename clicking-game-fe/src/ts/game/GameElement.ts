@@ -1,36 +1,35 @@
 import { ElementClickEvent } from "./ElementClickEvent.js";
-import { elementTypeToShapeMap } from "./ElementTypeToShape.js";
 import { Game } from "./Game.js";
+import { GameElementActionType } from "./GameElementActionType.js";
 import { GameElementShapeType } from "./GameElementShapeType.js";
 import { GameElementType } from "./GameElementType.js";
+import { Shape } from "./shape/Shape.js";
 
 export abstract class GameElement {
-    protected x: number = 0;
-    protected y: number = 0;
     protected id: number = 0;
 
     protected type: GameElementType = GameElementType.NONE;
     protected color: string = '';
-    protected shape: GameElementShapeType = GameElementShapeType.NONE;
+    protected shape: Shape;
+    protected action: GameElementActionType = GameElementActionType.NONE;
 
-    constructor(x: number, y: number, id: number, type: GameElementType) {
-        this.x = x;
-        this.y = y;
+    constructor(id: number, type: GameElementType, shape: Shape, action: GameElementActionType) {
         this.id = id;
         this.type = type;
-        this.shape = elementTypeToShapeMap.get(type) as GameElementShapeType;
+        this.shape = shape;
+        this.action = action;
     }
 
     public getType(): GameElementType {
         return this.type;
     }
 
-    public getX(): number {
-        return this.x;
+    public getShape(): Shape {
+        return this.shape;
     }
 
-    public getY(): number {
-        return this.y;
+    public getAction(): GameElementActionType {
+        return this.action;
     }
 
     public getId(): number {
